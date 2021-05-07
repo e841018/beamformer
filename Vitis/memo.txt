@@ -1,0 +1,11 @@
+backup LD_LIBRARY_PATH:
+${env_var:XILINX_VITIS}/platforms/xilinx_u50_gen3x16_xdma_201920_3/sw/lib/x86_64:${env_var:XILINX_XRT}/lib/:${env_var:XILINX_VITIS}/lib/lnx64.o:${env_var:XILINX_VITIS}/lib/lnx64.o/Default:${env_var:XILINX_VITIS}/lnx64/tools/gcc/lib64
+
+working solution:
+cd ${XILINX_VITIS}/lib/lnx64.o/Default
+cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25 .
+mv libstdc++.so.6 libstdc++.so.6.bak
+ln -s libstdc++.so.6.0.25 libstdc++.so.6
+
+solution to HW emulation problem (not working)
+export LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
