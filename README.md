@@ -3,13 +3,18 @@ Lab B of ACA2021, CSIE, NTU
 
 This repository includes modified source code from the article [Beamforming Acceleration](https://developer.xilinx.com/en/articles/beamforming-acceleration.html).
 
-A presentation was conducted on 2021/5/11. The slides are available [here](https://docs.google.com/presentation/d/1082F2w-9es7I9r-RD_cF-dyrVSSd6v9SpDDj6bjOBNo).
+A presentation was given on 2021/5/11. The slides are available [here](https://docs.google.com/presentation/d/1082F2w-9es7I9r-RD_cF-dyrVSSd6v9SpDDj6bjOBNo).
 
 ## HLS
 
 This folder includes 5 versions of optimizations.
 
-`beamformer.cpp` is the original version without optimization, and `miller_bfr_decimal_tb.c` is its testbench. 4 optimizations are added sequentially to examine the improvements in latency and the resource usage. Please refer to the slides for more details.
+`beamformer.c` is the original version without optimization, and `miller_bfr_decimal_tb.c` is its testbench. 4 optimizations are added sequentially to examine the improvements in latency and the resource usage. Besides, SLX FPGA is used to find a good set of pragmas automatically. Please refer to the slides for more details.
+
+`reports` contains reports and `directives.tcl` or source files from 8 solutions:
+
+* solution[0-4]_xxx: Sequentially applied optimizations. These folders contain `directives.tcl`.
+* SLX[0-2]_xxx: SLX solutions. These folders contain source files with inline pragmas.
 
 ## Vitis
 
