@@ -24,34 +24,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
 Kernel Description :
-   
+
     Matrix multiply
     This example showcases how reordering the loops helps achieve a better
     pipeline initiation interval (II) and better performance.
-    
+
     Arguments :
-    
+
         int *in1   (input)     --> Input  Matrix 1
         int *in2   (input)     --> Input  Matrix 2
         int *out_r   (output)    --> Output Matrix
 */
-
-#include <stdio.h>
-#include <string.h>
-
-// Simple set
-// #define CHANNELS 4 //number of channels
-// #define BEAMS 2    //number of beams to form
-// #define SAMPLES 5  //number of samples per PRI
-
-// Full set
-#define CHANNELS 16  //number of channels
-#define BEAMS 3      //number of beams to form
-#define SAMPLES 2500 //number of samples per PRI
+#include "beamformer.h"
 
 // Computes matrix multiply
-extern "C"
-{
 void beamformer(
     const int *RXi_in1, // Read-Only Matrix 1
     const int *RXq_in1, // Read-Only Matrix 1
@@ -83,6 +69,7 @@ void beamformer(
     int Wq[BEAMS][CHANNELS];
     int Bi[SAMPLES][BEAMS];
     int Bq[SAMPLES][BEAMS];
+    int itr, i, j, k;
 
     // #pragma HLS ARRAY_PARTITION variable = RXi dim = 2 complete
     // #pragma HLS ARRAY_PARTITION variable = RXq dim = 2 complete
@@ -91,7 +78,7 @@ void beamformer(
 
     // Burst read for matrix A
 readA:
-    for (int itr = 0, i = 0, j = 0; itr < SAMPLES * CHANNELS; itr++, j++) {
+    for (itr = 0, i = 0, j = 0; itr < SAMPLES * CHANNELS; itr++, j++) {
         // #pragma HLS PIPELINE II=1
         if (j == CHANNELS) {
             j = 0;
@@ -103,7 +90,7 @@ readA:
 
     // Burst read for matrix B
 readB:
-    for (int itr = 0, i = 0, j = 0; itr < CHANNELS * BEAMS; itr++, j++) {
+    for (itr = 0, i = 0, j = 0; itr < CHANNELS * BEAMS; itr++, j++) {
         // #pragma HLS PIPELINE II=1
         if (j == CHANNELS) {
             j = 0;
@@ -115,16 +102,16 @@ readB:
 
     // Performs matrix multiply
 loop1:
-    for (int i = 0; i < SAMPLES; i++) {
+    for (i = 0; i < SAMPLES; i++) {
 
     loop2:
-        for (int j = 0; j < BEAMS; j++) {
+        for (j = 0; j < BEAMS; j++) {
             // #pragma HLS PIPELINE II=1
             int result_i = 0;
             int result_q = 0;
 
         loop3:
-            for (int k = 0; k < CHANNELS; k++) {
+            for (k = 0; k < CHANNELS; k++) {
                 result_i += RXi[i][k] * Wi[j][k] - RXq[i][k] * Wq[j][k];
                 result_q += RXi[i][k] * Wq[j][k] + RXq[i][k] * Wi[j][k];
             }
@@ -135,7 +122,7 @@ loop1:
 
     // Burst write from matrix C
 writeC:
-    for (int itr = 0, i = 0, j = 0; itr < SAMPLES * BEAMS; itr++, j++) {
+    for (itr = 0, i = 0, j = 0; itr < SAMPLES * BEAMS; itr++, j++) {
         if (j == BEAMS) {
             j = 0;
             i++;
@@ -144,4 +131,3 @@ writeC:
         Bq_out[itr] = Bq[i][j];
     }
 }
-} // extern "C"

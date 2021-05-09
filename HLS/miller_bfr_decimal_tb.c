@@ -1,14 +1,4 @@
-#include <stdio.h>
-
-// Simple set
-// #define CHANNELS 4 //number of channels
-// #define BEAMS 2    //number of beams to form
-// #define SAMPLES 5  //number of samples per PRI
-
-// Full set
-#define CHANNELS 16  //number of channels
-#define BEAMS 3      //number of beams to form
-#define SAMPLES 2500 //number of samples per PRI
+#include "beamformer.h"
 
 typedef int dio_t;
 
@@ -69,7 +59,7 @@ int main() {
 
     // Compare the results file with the golden results
     if (retval != 0)
-        printf("Test failed  !!!\n");
+        printf("Test failed !\n");
     else
         printf("Test passed !\n");
 
